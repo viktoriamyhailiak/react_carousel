@@ -18,11 +18,12 @@ const Carousel: React.FC<Props> = ({
   animationDuration,
 }) => {
   const [translate, setTranslate] = useState(0);
-  const [toDisplay, setToDisplay] = useState(1300);
+  const [toDisplay, setToDisplay] = useState(images.length * itemWidth);
   const wide = step * itemWidth;
+  const width = toDisplay;
 
   const RightTranslation = () => {
-    if (translate > -(1300 - wide) && toDisplay - wide >= wide) {
+    if (translate > -(width - wide) && toDisplay - wide >= wide) {
       setTranslate(prev => prev - wide);
       setToDisplay(prev => prev - wide);
     } else if (toDisplay - wide < wide && toDisplay !== 0) {
@@ -35,9 +36,9 @@ const Carousel: React.FC<Props> = ({
     if (translate <= -wide) {
       setTranslate(prev => prev + wide);
       setToDisplay(prev => prev + wide);
-    } else if (toDisplay + wide + wide > 1300 && toDisplay !== 1300) {
-      setTranslate(prev => prev + (1300 - toDisplay - wide));
-      setToDisplay(1300);
+    } else if (toDisplay + wide + wide > width && toDisplay !== width) {
+      setTranslate(prev => prev + (width - toDisplay - wide));
+      setToDisplay(width);
     }
   };
 
