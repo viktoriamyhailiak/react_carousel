@@ -1,26 +1,97 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Carousel.scss';
+import c from 'classnames';
 
-const Carousel: React.FC = () => (
-  <div className="Carousel">
-    <ul className="Carousel__list">
-      <li>
-        <img src="./img/1.png" alt="1" />
-      </li>
-      <li>
-        <img src="./img/1.png" alt="2" />
-      </li>
-      <li>
-        <img src="./img/1.png" alt="3" />
-      </li>
-      <li>
-        <img src="./img/1.png" alt="4" />
-      </li>
-    </ul>
+interface Props {
+  images: string[];
+  itemWidth: number;
+  frameSize: number;
+  step: number;
+  animationDuration: number;
+}
 
-    <button type="button">Prev</button>
-    <button type="button">Next</button>
-  </div>
-);
+const Carousel: React.FC<Props> = ({
+  images,
+  itemWidth,
+  frameSize,
+  step,
+  animationDuration,
+}) => {
+  const [translate, setTranslate] = useState(0);
+  const [toDisplay, setToDisplay] = useState(1300);
+  const wide = step * itemWidth;
+
+  const RightTranslation = () => {
+    if (translate > -(1300 - wide) && toDisplay - wide >= wide) {
+      setTranslate(prev => prev - wide);
+      setToDisplay(prev => prev - wide);
+    } else if (toDisplay - wide < wide && toDisplay !== 0) {
+      setTranslate(prev => prev - (toDisplay - wide));
+      setToDisplay(0);
+    }
+  };
+
+  const LeftTranslation = () => {
+    if (translate <= -wide) {
+      setTranslate(prev => prev + wide);
+      setToDisplay(prev => prev + wide);
+    } else if (toDisplay + wide + wide > 1300 && toDisplay !== 1300) {
+      setTranslate(prev => prev + (1300 - toDisplay - wide));
+      setToDisplay(1300);
+    }
+  };
+
+  return (
+    <>
+      <div className="Wrapper" style={{ width: `${frameSize * itemWidth}px` }}>
+        <div className="Carousel">
+          <ul
+            className="Carousel__list"
+            style={{
+              transform: `translateX(${translate}px)`,
+              transition: `transform ${animationDuration} ease-in-out`,
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            {images.map((image, index) => (
+              <li key={index}>
+                <img
+                  src={image}
+                  alt={(index + 1).toString()}
+                  width={itemWidth}
+                  height={itemWidth}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="buttons">
+          <button
+            type="button"
+            className={c('button button--next', {
+              disabled: toDisplay === 1300,
+            })}
+            onClick={LeftTranslation}
+          >
+            &lt; Prev
+          </button>
+
+          <button
+            type="button"
+            className={c('button button--next', {
+              disabled: toDisplay === 0,
+            })}
+            onClick={RightTranslation}
+            data-cy="next"
+          >
+            Next &gt;
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
 
 export default Carousel;
