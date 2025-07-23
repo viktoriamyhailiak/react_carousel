@@ -17,29 +17,25 @@ const Carousel: React.FC<Props> = ({
   step,
   animationDuration,
 }) => {
-  const [translate, setTranslate] = useState(0);
-  const [toDisplay, setToDisplay] = useState(images.length * itemWidth);
-  const wide = step * itemWidth;
-  const width = toDisplay;
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const maxIndex = images.length - frameSize;
+  const translate = -currentIndex * itemWidth;
 
   const RightTranslation = () => {
-    if (translate > -(width - wide) && toDisplay - wide >= wide) {
-      setTranslate(prev => prev - wide);
-      setToDisplay(prev => prev - wide);
-    } else if (toDisplay - wide < wide && toDisplay !== 0) {
-      setTranslate(prev => prev - (toDisplay - wide));
-      setToDisplay(0);
-    }
+    setCurrentIndex(prev => {
+      const nextIndex = prev + step;
+
+      return nextIndex > maxIndex ? maxIndex : nextIndex;
+    });
   };
 
   const LeftTranslation = () => {
-    if (translate <= -wide) {
-      setTranslate(prev => prev + wide);
-      setToDisplay(prev => prev + wide);
-    } else if (toDisplay + wide + wide > width && toDisplay !== width) {
-      setTranslate(prev => prev + (width - toDisplay - wide));
-      setToDisplay(width);
-    }
+    setCurrentIndex(prev => {
+      const nextIndex = prev - step;
+
+      return nextIndex < 0 ? 0 : nextIndex;
+    });
   };
 
   return (
@@ -72,7 +68,7 @@ const Carousel: React.FC<Props> = ({
           <button
             type="button"
             className={c('button button--next', {
-              disabled: toDisplay === 1300,
+              disabled: currentIndex === 0,
             })}
             onClick={LeftTranslation}
           >
@@ -82,7 +78,7 @@ const Carousel: React.FC<Props> = ({
           <button
             type="button"
             className={c('button button--next', {
-              disabled: toDisplay === 0,
+              disabled: currentIndex >= maxIndex,
             })}
             onClick={RightTranslation}
             data-cy="next"
