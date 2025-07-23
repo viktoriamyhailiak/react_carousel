@@ -41,7 +41,10 @@ const Carousel: React.FC<Props> = ({
   return (
     <>
       <div className="Wrapper" style={{ width: `${frameSize * itemWidth}px` }}>
-        <div className="Carousel">
+        <div
+          className="Carousel"
+          style={{ width: `${images.length * itemWidth}px` }}
+        >
           <ul
             className="Carousel__list"
             style={{
