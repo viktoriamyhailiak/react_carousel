@@ -49,7 +49,7 @@ const Carousel: React.FC<Props> = ({
             className="Carousel__list"
             style={{
               transform: `translateX(${translate}px)`,
-              transition: `transform ${animationDuration} ease-in-out`,
+              transition: `transform ${animationDuration}ms ease-in-out`,
               display: 'flex',
               justifyContent: 'space-between',
             }}
